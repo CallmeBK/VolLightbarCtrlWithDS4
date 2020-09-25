@@ -11,7 +11,7 @@ Kernel plugin for PS Vita.  Requires vita firmware 3.60, Henkaku Enso, and the M
 4) Reboot vita
 
 # What it does
-Control volume using DS4 controller.  DS4 lightbar used as DS4 battery indicator.
+Control volume using DS4 controller.  DS4 lightbar used as DS4 battery indicator.  Supports up to 4 connected controllers.
 
 # How to use
 Press Select and L1 simultaneously to lower volume  
