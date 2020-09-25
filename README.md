@@ -1,3 +1,6 @@
+# Preface
+This was the first project I've ever written in c.  Most of my programming experience comes from VBA so I had a lot of help on this project and learned a lot (see credit section at bottom).
+
 # VolLightbarCtrlWithDS4
 Kernel plugin for PS Vita.  Requires vita firmware 3.60, Henkaku Enso, and the Minivitatv plugin to work.
 
