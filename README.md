@@ -47,7 +47,7 @@ davee
 -for teaching me that adding a delay in an infinite loop provides cooperative scheduling to prevent my plugin from hogging the cpu  
 -for informing me that using sceKernelDelayThread in a hook is bad form  
 
-Bythos
+Bythos  
 -for letting me know minivitatv plugin supports lightbar and DS4vita doesn't  
 -for supplying me with the user function used to print to PrincessLog and how to use it  
 -for helping me setup PrincessLog and getting it to work  
