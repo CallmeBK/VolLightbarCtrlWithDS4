@@ -11,19 +11,19 @@ Kernel plugin for PS Vita.  Requires vita firmware 3.60, Henkaku Enso, and the M
 Control volume using DS4 controller.  DS4 lightbar used as DS4 battery indicator.
 
 # How to use
-Press Select and L1 simultaneously to lower volume\n
-Press Select and R1 simultaneously to raise volume
-Press Select, L1, and R1 simultaneously to mute volume
+Press Select and L1 simultaneously to lower volume  
+Press Select and R1 simultaneously to raise volume  
+Press Select, L1, and R1 simultaneously to mute volume  
 
-Magenta lightbar means DS4 is charging
-Turquoise lightbar means DS4 is fully charged
-Green lightbar means DS4 is high charge
-Yellow lightbar means DS4 is medium charge
-Red lightbar means DS4 is low charge
-Red pulsing lightbar means DS4 will run out of charge soon
+Magenta lightbar means DS4 is charging  
+Turquoise lightbar means DS4 is fully charged  
+Green lightbar means DS4 is high charge  
+Yellow lightbar means DS4 is medium charge  
+Red lightbar means DS4 is low charge  
+Red pulsing lightbar means DS4 will run out of charge soon  
 
 # Credits
-xerpi
+xerpi  
 -for directing me to the discord henkaku server
 
 marburg
