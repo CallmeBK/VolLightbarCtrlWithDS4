@@ -61,176 +61,49 @@ int lightbar_thread(SceSize arglen, void *arg) {
 		/*Check to see how many DS4 controllers are connected*/
 		ksceCtrlGetControllerPortInfo(&portinfo);
 
-		/*If DS4 is connected to port 1, check DS4 battery level*/
-		if (portinfo.port[1] == 8) {
-			sceCtrlGetBatteryInfo(1, &battery_level);
-			/*If battery level is 0, turn off lightbar*/
-			if (battery_level == 0x0) {
-				sceCtrlSetLightBar(1, 0, 0, 0);
-			}
-			/*If battery level is 1, turn off lightbar*/
-			else if (battery_level == 0x1) {
-				sceCtrlSetLightBar(1, 0, 0, 0);
-			}
-			/*If battery level is 2, pulse lightbar with red color*/
-			else if (battery_level == 0x2) {
-				for (int i = 0; i<=255; i++) {
-					sceCtrlSetLightBar(1, i, 0, 0);
-					ksceKernelDelayThread(3000);
+		/*Check each port.  If DS4 is connected to port, check DS4 battery level*/
+		for (int c = 1; c < 5; c++) {
+			if (portinfo.port[c] == 8) {
+				sceCtrlGetBatteryInfo(c, &battery_level);
+				/*If battery level is 0, turn off lightbar*/
+				if (battery_level == 0x0) {
+					sceCtrlSetLightBar(c, 0, 0, 0);
 				}
-				for (int i = 255; i>=0; i--) {
-					sceCtrlSetLightBar(1, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is 1, turn off lightbar*/
+				else if (battery_level == 0x1) {
+					sceCtrlSetLightBar(c, 0, 0, 0);
 				}
-			}
-			/*If battery level is 3, turn lightbar red*/
-			else if (battery_level == 0x3) {
-				sceCtrlSetLightBar(1, 255, 0, 0);
-			}
-			/*If battery level is 4, turn lightbar yellow*/
-			else if (battery_level == 0x4) {
-				sceCtrlSetLightBar(1, 255, 255, 0);
-			}
-			/*If battery level is 5, turn lightbar green*/
-			else if (battery_level == 0x5) {
-				sceCtrlSetLightBar(1, 0, 255, 0);
-			}
-			/*If battery is charging, turn lightbar magenta*/
-			else if (battery_level == 0xEE) {
-				sceCtrlSetLightBar(1, 200, 0, 255);
-			}
-			/*If battery level is fully charged, turn lightbar turquoise*/
-			else if (battery_level == 0xEF) {
-				sceCtrlSetLightBar(1, 0, 255, 255);
-			}
-		}
-		/*If DS4 is connected to port 2, check DS4 battery level*/
-		if (portinfo.port[2] == 8) {
-			sceCtrlGetBatteryInfo(2, &battery_level);
-			/*If battery level is 0, turn off lightbar*/
-			if (battery_level == 0x0) {
-				sceCtrlSetLightBar(2, 0, 0, 0);
-			}
-			/*If battery level is 1, turn off lightbar*/
-			else if (battery_level == 0x1) {
-				sceCtrlSetLightBar(2, 0, 0, 0);
-			}
-			/*If battery level is 2, pulse lightbar with red color*/
-			else if (battery_level == 0x2) {
-				for (int i = 0; i<=255; i++) {
-					sceCtrlSetLightBar(2, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is 2, pulse lightbar with red color*/
+				else if (battery_level == 0x2) {
+					for (int i = 0; i<=255; i++) {
+						sceCtrlSetLightBar(c, i, 0, 0);
+						ksceKernelDelayThread(3000);
+					}
+					for (int i = 255; i>=0; i--) {
+						sceCtrlSetLightBar(c, i, 0, 0);
+						ksceKernelDelayThread(3000);
+					}
 				}
-				for (int i = 255; i>=0; i--) {
-					sceCtrlSetLightBar(2, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is 3, turn lightbar red*/
+				else if (battery_level == 0x3) {
+					sceCtrlSetLightBar(c, 255, 0, 0);
 				}
-			}
-			/*If battery level is 3, turn lightbar red*/
-			else if (battery_level == 0x3) {
-				sceCtrlSetLightBar(2, 255, 0, 0);
-			}
-			/*If battery level is 4, turn lightbar yellow*/
-			else if (battery_level == 0x4) {
-				sceCtrlSetLightBar(2, 255, 255, 0);
-			}
-			/*If battery level is 5, turn lightbar green*/
-			else if (battery_level == 0x5) {
-				sceCtrlSetLightBar(2, 0, 255, 0);
-			}
-			/*If battery is charging, turn lightbar magenta*/
-			else if (battery_level == 0xEE) {
-				sceCtrlSetLightBar(2, 200, 0, 255);
-			}
-			/*If battery level is fully charged, turn lightbar turquoise*/
-			else if (battery_level == 0xEF) {
-				sceCtrlSetLightBar(2, 0, 255, 255);
-			}
-		}
-		/*If DS4 is connected to port 3, check DS4 battery level*/
-		if (portinfo.port[3] == 8) {
-			sceCtrlGetBatteryInfo(3, &battery_level);
-			/*If battery level is 0, turn off lightbar*/
-			if (battery_level == 0x0) {
-				sceCtrlSetLightBar(3, 0, 0, 0);
-			}
-			/*If battery level is 1, turn off lightbar*/
-			else if (battery_level == 0x1) {
-				sceCtrlSetLightBar(3, 0, 0, 0);
-			}
-			/*If battery level is 2, pulse lightbar with red color*/
-			else if (battery_level == 0x2) {
-				for (int i = 0; i<=255; i++) {
-					sceCtrlSetLightBar(3, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is 4, turn lightbar yellow*/
+				else if (battery_level == 0x4) {
+					sceCtrlSetLightBar(c, 255, 255, 0);
 				}
-				for (int i = 255; i>=0; i--) {
-					sceCtrlSetLightBar(3, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is 5, turn lightbar green*/
+				else if (battery_level == 0x5) {
+					sceCtrlSetLightBar(c, 0, 255, 0);
 				}
-			}
-			/*If battery level is 3, turn lightbar red*/
-			else if (battery_level == 0x3) {
-				sceCtrlSetLightBar(3, 255, 0, 0);
-			}
-			/*If battery level is 4, turn lightbar yellow*/
-			else if (battery_level == 0x4) {
-				sceCtrlSetLightBar(3, 255, 255, 0);
-			}
-			/*If battery level is 5, turn lightbar green*/
-			else if (battery_level == 0x5) {
-				sceCtrlSetLightBar(3, 0, 255, 0);
-			}
-			/*If battery is charging, turn lightbar magenta*/
-			else if (battery_level == 0xEE) {
-				sceCtrlSetLightBar(3, 200, 0, 255);
-			}
-			/*If battery level is fully charged, turn lightbar turquoise*/
-			else if (battery_level == 0xEF) {
-				sceCtrlSetLightBar(3, 0, 255, 255);
-			}
-		}
-		/*If DS4 is connected to port 4, check DS4 battery level*/
-		if (portinfo.port[4] == 8) {
-			sceCtrlGetBatteryInfo(4, &battery_level);
-			/*If battery level is 0, turn off lightbar*/
-			if (battery_level == 0x0) {
-				sceCtrlSetLightBar(4, 0, 0, 0);
-			}
-			/*If battery level is 1, turn off lightbar*/
-			else if (battery_level == 0x1) {
-				sceCtrlSetLightBar(4, 0, 0, 0);
-			}
-			/*If battery level is 2, pulse lightbar with red color*/
-			else if (battery_level == 0x2) {
-				for (int i = 0; i<=255; i++) {
-					sceCtrlSetLightBar(4, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery is charging, turn lightbar magenta*/
+				else if (battery_level == 0xEE) {
+					sceCtrlSetLightBar(c, 200, 0, 255);
 				}
-				for (int i = 255; i>=0; i--) {
-					sceCtrlSetLightBar(4, i, 0, 0);
-					ksceKernelDelayThread(3000);
+				/*If battery level is fully charged, turn lightbar turquoise*/
+				else if (battery_level == 0xEF) {
+					sceCtrlSetLightBar(c, 0, 255, 255);
 				}
-			}
-			/*If battery level is 3, turn lightbar red*/
-			else if (battery_level == 0x3) {
-				sceCtrlSetLightBar(4, 255, 0, 0);
-			}
-			/*If battery level is 4, turn lightbar yellow*/
-			else if (battery_level == 0x4) {
-				sceCtrlSetLightBar(4, 255, 255, 0);
-			}
-			/*If battery level is 5, turn lightbar green*/
-			else if (battery_level == 0x5) {
-				sceCtrlSetLightBar(4, 0, 255, 0);
-			}
-			/*If battery is charging, turn lightbar magenta*/
-			else if (battery_level == 0xEE) {
-				sceCtrlSetLightBar(4, 200, 0, 255);
-			}
-			/*If battery level is fully charged, turn lightbar turquoise*/
-			else if (battery_level == 0xEF) {
-				sceCtrlSetLightBar(4, 0, 255, 255);
 			}
 		}
 		/*Add delay in between iterations for stability*/
@@ -249,11 +122,11 @@ int module_start(SceSize argc, const void *argv) {
 	tai_module_info_t modInfo;
 	SceUID thread_id;
 	
-    modInfo.size = sizeof(modInfo);
+ 	modInfo.size = sizeof(modInfo);
 	/*Get SceCtrl module info*/
-    taiGetModuleInfoForKernel(KERNEL_PID, "SceCtrl", &modInfo);
+ 	taiGetModuleInfoForKernel(KERNEL_PID, "SceCtrl", &modInfo);
 	/*Hook sceCtrlPeekBufferPositive2 function offset (from base address) because kernel does not export sceCtrlPeekBufferPositive2*/
-    tai_uid = taiHookFunctionOffsetForKernel(KERNEL_PID, &hook, modInfo.modid, 0, 0x3EF8, 1, sceCtrlPeekBufferPositive2_patched);
+ 	tai_uid = taiHookFunctionOffsetForKernel(KERNEL_PID, &hook, modInfo.modid, 0, 0x3EF8, 1, sceCtrlPeekBufferPositive2_patched);
 	
 	/*sceCtrlGetBatteryInfo and sceCtrlSetLightBar userland functions are not listed in psp2kern/ctrl.h header.
 	module_get_offset is called to add the offsets of these functions (0x5E95 and 0x5D81 in this case) to the base address
