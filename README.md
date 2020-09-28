@@ -96,6 +96,7 @@ teakhanirons
 -for providing the offset for sceCtrlPeekBufferPositive2 and providing an example using taiHookFunctionOffsetForKernel  
 -for helping Mer1e with hooking the function offset for sceCtrlPeekBufferPositive2  
 -for informing me that SceShell calls sceCtrlPeekBufferPositive2  
+-for suggesting to use a for loop to cycle through each controller in the lightbar_thread code
 
 Princess of Sleeping  
 -for teaching me that shell/main title id is referred to as \0, main, or NPXS19999  
