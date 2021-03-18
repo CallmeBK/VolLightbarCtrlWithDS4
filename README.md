@@ -3,6 +3,7 @@ This was the first project I've ever written in c.  Most of my programming exper
 
 # VolLightbarCtrlWithDS4
 Kernel plugin for PS Vita.  Requires vita firmware 3.60, Henkaku Enso, and the Minivitatv plugin to work.
+Also supports PSTV.
 
 # Installation Instructions
 1) Download zip from latest release
@@ -41,6 +42,9 @@ SKGleba
 -for informing me of ksceDebugPrintf (kernel printf function)  
 -for giving me the idea to use db.yml to find required stubs  
 -for informing me that I need to have taimoduleutils_stub for module_get_offset to work in kernel plugin  
+-for suggesting to reverse engineer sceAVConfigGetSystemVol, sceAVConfigSetSystemVol, sceAVConfigMuteOn functions  
+-for suggesting tools/programs to use for reverse engineering functions  
+-for informing me that bootimage is just a bunch of elfs appended to each other and then encrypted to one self  
 
 davee  
 -for teaching me that you should choose user over kernel everytime you get the option because with less privileges, you're less likely to cause system crashes if something goes wrong.  
@@ -75,6 +79,18 @@ Bythos
 -for teaching me how to use callback functions  
 -for informing me that putting the vita to sleep mode does not run module_stop function  
 -for informing me that event flags are set by my own code  
+-for supplying me with sceAVConfigGetSystemVol, sceAVConfigSetSystemVol, sceAVConfigMuteOn offsets  
+-for directing me to KuromeSan github page for psvita-elfs  
+-for informing me that AVConfig elf is in bootimage  
+-for informing me that a module can have multiple stubs  
+-for teaching me how to understand the code that is decompiled by Ghidra  
+-for introducing me to a function that determines if the current device is VITA or PSTV  
+-for informing me that kernel exports and user space syscalls are exported from the same module for most kernel space stuff  
+-for teaching me about what the segidx parameter is for in module_get_offset function.  Functions are put into segment 0.  Global variables are put into segment 1.  
+-for informing me that kernel space and user space share the same global variables  
+-for informing me that arguments from the function call map linearly in Ghidra  
+-for informing me that to get SceShell module info for Kernel, you have to wait until SceShell is loaded before calling taiGetModuleInfoForKernel  
+-for informing me that a function that exists in a stub, but is not in any headers can be declared and used all the same.  Stubs are not incomplete and are not missing functions from modules.  
 
 NOTxCorra  
 -for informing me of header/stub needed for sceClibPrintf function  
@@ -113,3 +129,6 @@ Mer1e
 -for supplying me with the offsets for sceCtrlGetBatteryInfo and sceCtrlSetLightBar  
 -for informing me that Kernel plugins are only loaded in one instance by the kernel.  User plugins under *MAIN are loaded in one instance under SceShell process.  User plugins under *ALL are loaded in separated instances for each of the processes running.  
 -for informing me that the last argument in module_get_offset should be passed in the form of (uintptr_t*)&ksceCtrlPeekBufferPositive2  
+
+orangelampshade
+-for testing PSTV compatibility  
