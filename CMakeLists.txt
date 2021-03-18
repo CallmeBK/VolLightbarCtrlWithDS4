@@ -35,6 +35,13 @@ target_link_libraries(${PROJECT_NAME}
   SceDebugForDriver_stub
   SceSysmemForDriver_stub
   SceThreadmgrForDriver_stub
+  SceSblAIMgrForDriver_stub
+  SceRegMgrForDriver_stub
+  SceDisplayForDriver_stub
+  SceSysclibForDriver_stub
+  SceSblACMgrForDriver_stub
+  SceAppMgrForDriver_stub
+  SceSysrootForKernel_stub
 )
 
 set_target_properties(${PROJECT_NAME}
