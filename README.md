@@ -130,5 +130,5 @@ Mer1e
 -for informing me that Kernel plugins are only loaded in one instance by the kernel.  User plugins under *MAIN are loaded in one instance under SceShell process.  User plugins under *ALL are loaded in separated instances for each of the processes running.  
 -for informing me that the last argument in module_get_offset should be passed in the form of (uintptr_t*)&ksceCtrlPeekBufferPositive2  
 
-orangelampshade
+Orangelampshade  
 -for testing PSTV compatibility  
