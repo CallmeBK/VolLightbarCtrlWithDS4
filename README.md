@@ -12,12 +12,16 @@ Also supports PSTV.
 4) Reboot vita
 
 # What it does
-Control volume using DS4 controller.  DS4 lightbar used as DS4 battery indicator.  Supports up to 4 connected controllers.
+Control volume using DS4 controller.  
+DS4 lightbar used as DS4 battery indicator.  
+Adjust DS4 lightbar brightness.  
+Supports up to 4 connected controllers.  
 
 # How to use
 Press Select and L1 simultaneously to lower volume  
 Press Select and R1 simultaneously to raise volume  
 Press Select, L1, and R1 simultaneously to mute volume  
+Press L1, L2, R1, and R2 simultaneously to toggle DS4 lightbar brightess  
 
 Magenta lightbar means DS4 is charging  
 Turquoise lightbar means DS4 is fully charged  
@@ -132,3 +136,12 @@ Mer1e
 
 Orangelampshade  
 -for testing PSTV compatibility  
+
+Rinnegatamante  
+-for AnalogsEnhancer plugin.  I used this as reference for how to open, read, and write to a text file for storing configuration settings.  
+
+cuevavirus  
+-for Quick Menu Plus plugin.  I used this as reference for converting a char array to an integer data type.  
+
+aliihsanasl  
+-for the idea to give this plugin the ability to change lightbar brightness.  
