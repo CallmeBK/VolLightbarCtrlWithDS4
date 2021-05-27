@@ -1,5 +1,6 @@
 #include <string.h>
 #include <taihen.h>
+#include <stdio.h>
 #include <psp2kern/kernel/types.h>
 #include <psp2kern/ctrl.h>
 #include <psp2kern/sblaimgr.h>
@@ -10,6 +11,7 @@
 #include <psp2kern/kernel/sysmem.h>
 #include <psp2kern/registrymgr.h>
 #include <psp2kern/display.h>
+#include <psp2kern/kernel/iofilemgr.h>
 
 
 #define R_SUCCEEDED(res)   ((res)>=0)
@@ -58,6 +60,15 @@ int X1_indicator;
 int X2_indicator;
 int Y1_indicator;
 int Y2_indicator;
+static uint32_t p1multiplier;
+static uint32_t p2multiplier;
+static uint32_t p3multiplier;
+static uint32_t p4multiplier;
+int toggle_port1 = 0;
+int toggle_port2 = 0;
+int toggle_port3 = 0;
+int toggle_port4 = 0;
+char buffer[3];
 
 SceBool ksceAppMgrIsExclusiveProcessRunning();  /*delcare function for determining if current process is exclusive*/
 int ksceSblACMgrIsShell(SceUID pid);  /*delcare function for determining if current process is shell (main)*/
@@ -233,26 +244,192 @@ int sceCtrlPeekBufferPositive2_patched(int port, SceCtrlData *pad_data, int coun
 	/*Check if device is VITA and not PSTV*/
 	genuineVITA = ksceSblAimgrIsGenuineVITA();
 	
+	
+	
 	/*VITA behavior*/
     /*If L1 and Select are the only buttons pressed, add volume down as a pressed button
 	If R1 and Select are the only buttons pressed, add volume up as a pressed button
 	Separate if statements allow for both volume down and volume up to be added as pressed buttons.
-	Holding volume down and volume up buttons will mute the volume.*/
+	Holding volume down and volume up buttons will mute the volume.  If L1,L2,R1,R2 are all pressed
+	and the lightbar brightness is at 100%, lightbar brightness will change to 5%.  And vice versa.
+	This brightness toggle is controller independent, so only the controller that has L1,L2,R1,R2
+	held down will have its lightbar brightness change.*/
 	if (genuineVITA == 1) {
-		if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_SELECT))
+		if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_LTRIGGER | SCE_CTRL_RTRIGGER)){
+			if (port == 1){
+				if (toggle_port1 == 0){
+					if (p1multiplier == 100){
+						p1multiplier = 5;
+						SceUID fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd, "5", 3);
+						ksceIoClose(fd);
+					}
+					else if (p1multiplier == 5){
+						p1multiplier = 100;
+						SceUID fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd, "100", 3);
+						ksceIoClose(fd);
+					}
+					toggle_port1 = 1;
+				}
+			}
+			else if (port == 2){
+				if (toggle_port2 == 0){
+					if (p2multiplier == 100){
+						p2multiplier = 5;
+						SceUID fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd1, "5", 3);
+						ksceIoClose(fd1);
+					}
+					else if (p2multiplier == 5){
+						p2multiplier = 100;
+						SceUID fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd1, "100", 3);
+						ksceIoClose(fd1);
+					}
+					toggle_port2 = 1;
+				}
+			}
+			else if (port == 3){
+				if (toggle_port3 == 0){
+					if (p3multiplier == 100){
+						p3multiplier = 5;
+						SceUID fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd2, "5", 3);
+						ksceIoClose(fd2);
+					}
+					else if (p3multiplier == 5){
+						p3multiplier = 100;
+						SceUID fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd2, "100", 3);
+						ksceIoClose(fd2);
+					}
+					toggle_port3 = 1;
+				}
+			}
+			else if (port == 4){
+				if (toggle_port4 == 0){
+					if (p4multiplier == 100){
+						p4multiplier = 5;
+						SceUID fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd3, "5", 3);
+						ksceIoClose(fd3);
+					}
+					else if (p4multiplier == 5){
+						p4multiplier = 100;
+						SceUID fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd3, "100", 3);
+						ksceIoClose(fd3);
+					}
+					toggle_port4 = 1;
+				}
+			}
+		}
+		else if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_SELECT)){
 			pad_data->buttons = (SCE_CTRL_VOLDOWN | SCE_CTRL_VOLUP);
-		else if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_SELECT))
+		}
+		else if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_SELECT)){
 			pad_data->buttons = SCE_CTRL_VOLDOWN;
-		else if (pad_data->buttons == (SCE_CTRL_R1 | SCE_CTRL_SELECT))
+		}
+		else if (pad_data->buttons == (SCE_CTRL_R1 | SCE_CTRL_SELECT)){
 			pad_data->buttons = SCE_CTRL_VOLUP;
+		}
+		else if (pad_data->buttons == 0){
+			if (port == 1){
+				toggle_port1 = 0;
+			}
+			else if (port == 2){
+				toggle_port2 = 0;
+			}
+			else if (port == 3){
+				toggle_port3 = 0;
+			}
+			else if (port == 4){
+				toggle_port4 = 0;
+			}
+		}
 	}
 	/*PSTV behavior*/
 	/*Volume up and volume down buttons do not work on PSTV.  PSTV volume is
 	controlled by the master volume variable and not the system volume variable.
 	The code below recreates the volume up and volume down button functionality
-	using the master volume variable rather than the system volume variable.*/
+	using the master volume variable rather than the system volume variable.
+	If L1,L2,R1,R2 are all pressed and the lightbar brightness is at 100%, lightbar
+	brightness will change to 5%.  And vice versa.  This brightness toggle is 
+	controller independent, so only the controller that has L1,L2,R1,R2
+	held down will have its lightbar brightness change.*/*/
 	else {
-		if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_SELECT)){
+		if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_LTRIGGER | SCE_CTRL_RTRIGGER)){
+			if (port == 1){
+				if (toggle_port1 == 0){
+					if (p1multiplier == 100){
+						p1multiplier = 5;
+						SceUID fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd, "5", 3);
+						ksceIoClose(fd);
+					}
+					else if (p1multiplier == 5){
+						p1multiplier = 100;
+						SceUID fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd, "100", 3);
+						ksceIoClose(fd);
+					}
+					toggle_port1 = 1;
+				}
+			}
+			else if (port == 2){
+				if (toggle_port2 == 0){
+					if (p2multiplier == 100){
+						p2multiplier = 5;
+						SceUID fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd1, "5", 3);
+						ksceIoClose(fd1);
+					}
+					else if (p2multiplier == 5){
+						p2multiplier = 100;
+						SceUID fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd1, "100", 3);
+						ksceIoClose(fd1);
+					}
+					toggle_port2 = 1;
+				}
+			}
+			else if (port == 3){
+				if (toggle_port3 == 0){
+					if (p3multiplier == 100){
+						p3multiplier = 5;
+						SceUID fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd2, "5", 3);
+						ksceIoClose(fd2);
+					}
+					else if (p3multiplier == 5){
+						p3multiplier = 100;
+						SceUID fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd2, "100", 3);
+						ksceIoClose(fd2);
+					}
+					toggle_port3 = 1;
+				}
+			}
+			else if (port == 4){
+				if (toggle_port4 == 0){
+					if (p4multiplier == 100){
+						p4multiplier = 5;
+						SceUID fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd3, "5", 3);
+						ksceIoClose(fd3);
+					}
+					else if (p4multiplier == 5){
+						p4multiplier = 100;
+						SceUID fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+						ksceIoWrite(fd3, "100", 3);
+						ksceIoClose(fd3);
+					}
+					toggle_port4 = 1;
+				}
+			}
+		}
+		else if (pad_data->buttons == (SCE_CTRL_L1 | SCE_CTRL_R1 | SCE_CTRL_SELECT)){
 			if (*mastervol != min_volume) {                                         /*If master volume level is not 0*/
 				volbeforemute = *mastervol;                                         /*Store the master volume level into volbeforemute variable*/
 			}
@@ -310,11 +487,98 @@ int sceCtrlPeekBufferPositive2_patched(int port, SceCtrlData *pad_data, int coun
 			}
 			pad_data->buttons = 0;                                                  /*Limits R1,Select functionality to only raising volume when they are both pressed simultaneously.  Example: R1 will not cause PSTV to switch apps when you are just trying to raise the volume.*/
 		}
-		else if (port == 1) {                                                       /*If no combinations of L1,R1 with Select are being held down for controller number 1*/
-			recentmute = 0;                                                         /*The PSTV has not been muted recently*/
+		else if (pad_data->buttons == 0){
+			if (port == 1){
+				recentmute = 0;
+				toggle_port1 = 0;
+			}
+			else if (port == 2){
+				toggle_port2 = 0;
+			}
+			else if (port == 3){
+				toggle_port3 = 0;
+			}
+			else if (port == 4){
+				toggle_port4 = 0;
+			}
 		}
 	}
     return ret;
+}
+
+/*Check config files for lightbar settings.  If none exist, create them.*/
+void loadconfig(void){
+
+	/*Make folder if it does not exist*/
+	ksceIoMkdir("ux0:data/VolLightbarCtrlWithDS4", 0777);
+	
+	/*Attempt to open config files for each controller*/
+	SceUID fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_RDONLY, 0777);
+	SceUID fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_RDONLY, 0777);
+	SceUID fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_RDONLY, 0777);
+	SceUID fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_RDONLY, 0777);
+	
+	if (fd >= 0) {
+		
+		ksceIoRead(fd, buffer, 3);
+		ksceIoClose(fd);
+		p1multiplier = strtol(buffer, NULL, 0);
+		
+	}
+	else {
+		
+		fd = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p1config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+		ksceIoWrite(fd, "100", 3);
+		ksceIoClose(fd);
+		p1multiplier = 100;
+		
+	}
+	if (fd1 >= 0) {
+		
+		ksceIoRead(fd1, buffer, 3);
+		ksceIoClose(fd1);
+		p2multiplier = strtol(buffer, NULL, 0);
+		
+	}
+	else {
+		
+		fd1 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p2config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+		ksceIoWrite(fd1, "100", 3);
+		ksceIoClose(fd1);
+		p2multiplier = 100;
+		
+	}
+	if (fd2 >= 0) {
+		
+		ksceIoRead(fd2, buffer, 3);
+		ksceIoClose(fd2);
+		p3multiplier = strtol(buffer, NULL, 0);
+		
+	}
+	else {
+		
+		fd2 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p3config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+		ksceIoWrite(fd2, "100", 3);
+		ksceIoClose(fd2);
+		p3multiplier = 100;
+		
+	}
+	if (fd3 >= 0) {
+		
+		ksceIoRead(fd3, buffer, 3);
+		ksceIoClose(fd3);
+		p4multiplier = strtol(buffer, NULL, 0);
+		
+	}
+	else {
+		
+		fd3 = ksceIoOpen("ux0:/data/VolLightbarCtrlWithDS4/p4config.txt", SCE_O_WRONLY | SCE_O_CREAT, 0777);
+		ksceIoWrite(fd3, "100", 3);
+		ksceIoClose(fd3);
+		p4multiplier = 100;
+		
+	}
+	
 }
 
 /*Thread function to check DS4 battery level and set DS4 lightbar color
@@ -326,6 +590,7 @@ int lightbar_thread(SceSize arglen, void *arg) {
     (void)arg;
 	SceUInt8 battery_level = 0x0;
 	SceCtrlPortInfo portinfo;
+	uint32_t lightbarbrightness;
 
 	/*loop runs until vita shuts down*/
     for (;;) {
@@ -337,6 +602,18 @@ int lightbar_thread(SceSize arglen, void *arg) {
 		for (int c = 1; c < 5; c++) {
 			if (portinfo.port[c] == 8) {
 				sceCtrlGetBatteryInfo(c, &battery_level);
+				if (c == 1) {
+					lightbarbrightness = p1multiplier;
+				}
+				else if (c == 2) {
+					lightbarbrightness = p2multiplier;
+				}
+				else if (c == 3) {
+					lightbarbrightness = p3multiplier;
+				}
+				else if (c == 4) {
+					lightbarbrightness = p4multiplier;
+				}
 				/*If battery level is 0, turn off lightbar*/
 				if (battery_level == 0x0) {
 					sceCtrlSetLightBar(c, 0, 0, 0);
@@ -358,23 +635,23 @@ int lightbar_thread(SceSize arglen, void *arg) {
 				}
 				/*If battery level is 3, turn lightbar red*/
 				else if (battery_level == 0x3) {
-					sceCtrlSetLightBar(c, 255, 0, 0);
+					sceCtrlSetLightBar(c, 255 * lightbarbrightness / 100, 0, 0);
 				}
 				/*If battery level is 4, turn lightbar yellow*/
 				else if (battery_level == 0x4) {
-					sceCtrlSetLightBar(c, 255, 255, 0);
+					sceCtrlSetLightBar(c, 255 * lightbarbrightness / 100, 255 * lightbarbrightness / 100, 0);
 				}
 				/*If battery level is 5, turn lightbar green*/
 				else if (battery_level == 0x5) {
-					sceCtrlSetLightBar(c, 0, 255, 0);
+					sceCtrlSetLightBar(c, 0, 255 * lightbarbrightness / 100, 0);
 				}
 				/*If battery is charging, turn lightbar magenta*/
 				else if (battery_level == 0xEE) {
-					sceCtrlSetLightBar(c, 200, 0, 255);
+					sceCtrlSetLightBar(c, 200 * lightbarbrightness / 100, 0, 255 * lightbarbrightness / 100);
 				}
 				/*If battery level is fully charged, turn lightbar turquoise*/
 				else if (battery_level == 0xEF) {
-					sceCtrlSetLightBar(c, 0, 255, 255);
+					sceCtrlSetLightBar(c, 0, 255 * lightbarbrightness / 100, 255 * lightbarbrightness / 100);
 				}
 			}
 		}
@@ -430,6 +707,9 @@ int module_start(SceSize argc, const void *argv) {
 
 	/*Create thread to control DS4 lightbar.  Highest thread priority is 64.  Lowest thread priority is 191.*/
 	thread_id = ksceKernelCreateThread("LightbarThread", lightbar_thread, 191, 0x10000, 0, 0, NULL);
+
+	/*Check lightbar settings*/
+	loadconfig();
 
 	/*Start the created thread*/
 	ksceKernelStartThread(thread_id, 0, NULL);
