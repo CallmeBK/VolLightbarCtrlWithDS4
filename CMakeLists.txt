@@ -42,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
   SceSblACMgrForDriver_stub
   SceAppMgrForDriver_stub
   SceSysrootForKernel_stub
+  SceIofilemgrForDriver_stub
 )
 
 set_target_properties(${PROJECT_NAME}
